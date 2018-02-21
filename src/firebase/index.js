@@ -1,6 +1,6 @@
 import * as firebase from 'firebase'
-const admin = require('firebase-admin')
-const serviceAccount = require('./serviceAccountKey.json')
+// const admin = require('firebase-admin')
+// const serviceAccount = require('./serviceAccountKey.json')
 
 
 const firebaseConfig = {
@@ -14,8 +14,9 @@ const firebaseConfig = {
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig)
 
-export const firebaseAdmin = admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://anish-6cd8e.firebaseio.com'
-})
+console.log('4***', firebase.auth.FacebookAuthProvider)
+// export const firebaseAdmin = admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: 'https://anish-6cd8e.firebaseio.com'
+// })
 
