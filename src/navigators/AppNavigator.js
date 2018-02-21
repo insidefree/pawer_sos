@@ -21,6 +21,7 @@ class AppWithNavigationState extends React.Component {
     }
 
     render() {
+        // console.log(`AppNavigator: ${JSON.stringify(this.props.dispatch({type: 'asd'}))}`)
         const { dispatch, nav } = this.props
         return (
             <AppNavigator

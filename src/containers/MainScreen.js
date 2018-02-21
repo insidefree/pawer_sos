@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React from 'react'
+import { StyleSheet, View } from 'react-native'
 
-import LoginStatusMessage from '../components/LoginStatusMessage';
-import AuthButton from '../components/AuthButon';
+import LoginStatusMessage from '../components/LoginStatusMessage'
+import AuthButton from '../components/AuthButon'
 
 const styles = StyleSheet.create({
     container: {
@@ -24,4 +24,4 @@ MainScreen.navigationOptions = {
     title: 'Home Screen',
 };
 
-export default MainScreen;
+export default MainScreen
