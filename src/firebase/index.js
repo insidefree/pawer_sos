@@ -14,7 +14,6 @@ const firebaseConfig = {
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig)
 
-console.log('4***', firebase.auth.FacebookAuthProvider)
 // export const firebaseAdmin = admin.initializeApp({
 //   credential: admin.credential.cert(serviceAccount),
 //   databaseURL: 'https://anish-6cd8e.firebaseio.com'
