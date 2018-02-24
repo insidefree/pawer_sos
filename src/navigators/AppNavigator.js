@@ -3,15 +3,19 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { addNavigationHelpers, StackNavigator } from 'react-navigation'
 
-import LoginScreen from '../containers/LoginScreen'
 import MainScreen from '../containers/MainScreen'
+import LoginScreen from '../containers/LoginScreen'
 import ProfileScreen from '../containers/ProfileScreen'
+import FoundPetScreen from '../containers/FoundPetScreen'
+import LostPetScreen from '../containers/LostPetScreen'
 import { addListener } from '../utils/redux'
 
 export const AppNavigator = StackNavigator({
-    Login: { screen: LoginScreen },
     Main: { screen: MainScreen },
+    Login: { screen: LoginScreen },
     Profile: { screen: ProfileScreen },
+    FoundPet: { screen: FoundPetScreen },
+    LostPet: { screen: LostPetScreen },
 })
 
 class AppWithNavigationState extends React.Component {

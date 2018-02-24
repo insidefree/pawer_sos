@@ -14,6 +14,7 @@ class LoginScreen extends Component {
             password: ''
         }
     }
+    
     componentDidMount() {
         firebaseApp.auth().onAuthStateChanged(user => {
             if (user != null) {
