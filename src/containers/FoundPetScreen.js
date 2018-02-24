@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { Container, Content, Header, Form, Input, Item, Button, Label } from 'native-base'
-import { firebaseApp } from '../firebase'
+
+import CameraPawer from '../components/CameraPawer'
+import { fbAcidents } from '../firebase'
 
 
 export default class FoundPetScreen extends Component {
@@ -14,25 +16,28 @@ export default class FoundPetScreen extends Component {
     }
     sendNotification = (name, phoneNumber) => {
         try {
-            // firebaseApp.auth().signInWithEmailAndPassword(name, phoneNumber)
-            //     .then(user => {
-            //         console.log(user)
-            //     })
+            fbAcidents.push().set({
+                name,
+                phoneNumber
+            })
         } catch (error) {
-            // console.log(error.toString())
+            console.log(error.toString())
         }
     }
 
     render() {
+        const { name, phoneNumber } = this.state
+
         return (
             <Container style={styles.container}>
+                <CameraPawer />
                 <Form>
                     <Item floatingLabel>
                         <Label>Name</Label>
                         <Input
                             autoCorrect={false}
                             autoCapitalize='none'
-                            onChangeText={email => this.setState({ name })}
+                            onChangeText={name => this.setState({ name })}
                         />
                     </Item>
                     <Item floatingLabel>
@@ -40,7 +45,7 @@ export default class FoundPetScreen extends Component {
                         <Input
                             autoCorrect={false}
                             autoCapitalize='none'
-                            onChangeText={password => this.setState({ phoneNumber })}
+                            onChangeText={phoneNumber => this.setState({ phoneNumber })}
                         />
                     </Item>
                     <Button
@@ -48,7 +53,7 @@ export default class FoundPetScreen extends Component {
                         full
                         rounded
                         success
-                        onPress={() => { this.sendNotification(this.state.name, this.state.phoneNumber) }}
+                        onPress={() => { this.sendNotification(name, phoneNumber) }}
                     >
                         <Text style={{ color: 'white' }}>Send notification</Text>
                     </Button>
