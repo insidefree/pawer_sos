@@ -5,8 +5,7 @@ import {
     StyleSheet
 } from "react-native"
 import b64 from 'base64-js'
-
-import { Camera, Permissions, TouchableOpacity } from 'expo'
+import { Camera, Permissions, TouchableOpacity, ImagePicker } from 'expo'
 import { Container, Content, Header, Item, Icon, Input, Button } from 'native-base'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { firebaseApp } from '../firebase'
@@ -24,9 +23,13 @@ class CameraPawer extends Component {
 
     snap = async () => {
         if (this.camera) {
-            let photo = await this.camera.takePictureAsync();
-            console.log('photo', photo)
-            const byteArray = b64.toByteArray(photo.uri.base64)
+            // let photo = await this.camera.takePictureAsync()
+            // console.log('photo', photo)
+            
+            const result = await ImagePicker.launchCameraAsync({
+                base64: true
+            })
+            const byteArray = b64.toByteArray(result.base64)
             const metadata = { contentType: 'image/jpg' };
             firebaseApp.storage().ref('/acidents').child('my_pic.jpg').put(byteArray, metadata).then(snapshot => {
                 console.log("uploaded image!")
