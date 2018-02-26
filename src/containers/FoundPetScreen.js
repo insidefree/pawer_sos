@@ -78,30 +78,32 @@ export default class FoundPetScreen extends Component {
     }
 
     upload = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [4, 3],
+        const name = `picture.jpg`;
+        const body = new FormData();
+        const result = await ImagePicker.launchCameraAsync({
             base64: true
+        })
+        // console.log('resul', result)
+        body.append("picture", {
+            uri: result.uri,
+            name,
+            type: "image/jpg"
         });
-        if (!result.cancelled) {
-            try {
-                var metadata = {
-                    contentType: 'image/png',
-                    customMetadata: {
-                        'location': 'Egypt'
-                    }
-                };
-                //Concat the image type to the base64 data
-                let message = 'data:image/png;base64, ' + result.base64;
-
-                //Uploads the base64 to firebase as a raw string, with the specified metadata
-                storageRef.ref('acidents').child('Imag2').putString(message, "raw", metadata).then(() => console.log("done")).catch((err) => console.log(err));
-                this.setState({ images: result.uri });
+        const res = await fetch("http://127.0.0.1:3000/upload/", {
+            method: "POST",
+            body,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "multipart/form-data"
             }
-            catch (err) {
-                console.log(err);
-            }
-        }
+        }).catch(error => {console.log('--error', error)});
+        console.log('--res', res)
+        // const url = await firebaseApp.storage().ref().child('acidents').getDownloadURL();
+        // await firebaseApp.storage().ref().child('images').getDownloadURL()
+        //     .then(url => {
+        //         console.log('--URL', url)
+        //     })
+        // console.log('--URL', url)
     }
 
     render() {

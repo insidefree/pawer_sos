@@ -30,7 +30,7 @@
     "no-template-curly-in-string": 1,
 
     // Warn if return statements do not either always or never specify values
-    "consistent-return": 1,
+    "consistent-return": 0,
 
     // Warn if no return statements in callbacks of array methods
     "array-callback-return": 1,
@@ -99,7 +99,7 @@
     "no-shadow-restricted-names": 2,
 
     // Enforce return statements in callbacks of array methods
-    "callback-return": 2,
+    "callback-return": 1,
 
     // Require error handling in callbacks
     "handle-callback-err": 2,
