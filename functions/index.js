@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const admin = require('firebase-admin')
 const cors = require("cors")
 const express = require("express")
-const { fileUpload, uploadImageToStorage } = require("./utils")
+// const { fileUpload, uploadImageToStorage } = require("./utils")
 
 admin.initializeApp(functions.config().firebase)
 
@@ -122,3 +122,82 @@ exports.api2 = functions.https.onRequest(app2)
 // module.exports = {
 //   api3
 // }
+
+const app = express()
+const googleStorage = require('@google-cloud/storage')
+const Multer = require('multer')
+
+const storage = googleStorage({
+    projectId: 'anish-6cd8e',
+    keyFilename: './config/fb_json.json'
+});
+
+const bucket = storage.bucket('anish-6cd8e.appspot.com')
+
+const multer = Multer({
+    storage: Multer.memoryStorage(),
+    limits: {
+        fileSize: 10 * 2048 * 2048 // no larger than 5mb, you can change as needed.
+    }
+})
+
+/**
+ * Adding new file to the storage
+ */
+const fileUpload = require('express-fileupload')
+app.use(fileUpload())
+app.post('/upload', (req, res) => {
+    console.log('Upload Image', req)
+    if (!req.file)
+        return res.status(400).send('No files were uploaded.');
+    console.log('Upload Image 2')
+    // let file = req.file;
+    let file = req.file.sampleFile;
+    console.log('Upload Image 3')
+    if (file) {
+        console.log('--file.originalname', file.originalname)
+        uploadImageToStorage(file).then((success) => {
+            res.status(200).send({
+                status: 'success'
+            });
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+});
+
+/**
+ * Upload the image file to Google Storage
+ * @param {File} file object that will be uploaded to Google Storage
+ */
+const uploadImageToStorage = (file) => {
+    let prom = new Promise((resolve, reject) => {
+        if (!file) {
+            reject('No image file');
+        }
+        let newFileName = `${file.originalname}_${Date.now()}`;
+
+        let fileUpload = bucket.file(newFileName);
+
+        const blobStream = fileUpload.createWriteStream({
+            metadata: {
+                contentType: file.mimetype
+            }
+        });
+
+        blobStream.on('error', (error) => {
+            reject('Something is wrong! Unable to upload at the moment.');
+        });
+
+        blobStream.on('finish', () => {
+            // The public URL can be used to directly access the file via HTTP.
+            const url = format(`https://storage.googleapis.com/${bucket.name}/photos/${fileUpload.name}`);
+            resolve(url);
+        });
+
+        blobStream.end(file.buffer);
+    });
+    return prom;
+}
+
+exports.app = functions.https.onRequest(app)

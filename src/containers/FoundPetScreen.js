@@ -89,6 +89,15 @@ export default class FoundPetScreen extends Component {
             name,
             type: "image/jpg"
         })
+        const res = await fetch('https://us-central1-anish-6cd8e.cloudfunctions.net/app/upload', {
+            method: "POST",
+            body,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "multipart/form-data"
+            }
+        })
+        console.log('--res', res)
     }
 
     render() {
