@@ -81,7 +81,8 @@ export default class FoundPetScreen extends Component {
         const name = `picture.jpg`;
         const body = new FormData();
         const result = await ImagePicker.launchCameraAsync({
-            base64: true
+            base64: true,
+            quality: 0
         })
         // console.log('resul', result.uri)
         body.append("picture", {
