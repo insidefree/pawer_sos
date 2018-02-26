@@ -31,7 +31,6 @@ exports.sendPushNotification = functions.database.ref('acidents/{id}').onCreate(
         //firebase.database then() respved a single promise that resolves
         //once all the messages have been resolved 
         return Promise.all(messages)
-
     })
         .then(messages => {
             // console.log(messages)
@@ -42,7 +41,6 @@ exports.sendPushNotification = functions.database.ref('acidents/{id}').onCreate(
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(messages)
-
             })
         })
         .catch(reason => {
@@ -50,53 +48,22 @@ exports.sendPushNotification = functions.database.ref('acidents/{id}').onCreate(
         })
 })
 
-// upload images
 // const api = express().use(cors({ origin: true }));
 // fileUpload("/picture", api);
-
 // api.post("/picture", function (req, response, next) {
 //     uploadImageToStorage(req.files.file[0])
-//         .then(metadata => {
-//             response.status(200).json(metadata[0]);
-//             next();
-//         })
-//         .catch(error => {
-//             console.error(error);
-//             response.status(500).json({ error });
-//             next();
-//         });
+//     .then(metadata => {
+//         response.status(200).json(metadata[0]);
+//         next();
+//     })
+//     .catch(error => {
+//         console.error(error);
+//         response.status(500).json({ error });
+//         next();
+//     });
 // });
 
-// api.get("*", (request, response) => {
-//     response.send("Hello from Express on Firebase with CORS!")
-// })
-
 // exports.api = functions.https.onRequest(api)
-
-const app = express()
-
-// default options
-
-app.post('/upload', function (req, res) {
-    if (!req.files)
-        return res.status(400).send('No files were uploaded.');
-
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    let sampleFile = req.files.sampleFile;
-    console.log('--sampleFile', sampleFile)
-})
-
-app.get("*", (request, response) => {
-    response.send("Hello from Express on Firebase!")
-})
-
-// app.listen(3000, () => { })
-var os = require("os");
-console.log(os.hostname())
-
-
-exports.app = functions.https.onRequest(app)
-
 
 /* Express */
 // const app1 = express()
@@ -111,17 +78,29 @@ exports.app = functions.https.onRequest(app)
 // }
 
 /* Express with CORS */
-const app2 = express()
+/* const app2 = express()
+const URL = require('blob-util')
 app2.use(cors({ origin: true }))
 app2.get("*", (request, response) => {
     response.send("Hello from Express on Firebase with CORS!")
+    console.log('--api2--')
+    fetch('https://upload.wikimedia.org/wikipedia/commons/7/77/Delete_key1.jpg')
+        .then(res => res.blob()) // Gets the response and returns it as a blob
+        .then(blob => {
+            // Here's where you get access to the blob
+            // And you can use it for whatever you want
+            // Like calling ref().put(blob)
+
+            // Here, I use it to make an image appear on the page
+            let objectURL = URL.createObjectURL(blob);
+            // let myImage = new Image();
+            // myImage.src = objectURL;
+            console.log('objectURL', objectURL)
+        })
+        .catch(error => console.log('fetch error', error))
 })
-
-const api2 = functions.https.onRequest(app2)
-
-module.exports = {
-    api2
-}
+exports.api2 = functions.https.onRequest(app2)
+ */
 
 /* Express with CORS & automatic trailing '/' solution */
 // const app3 = express()

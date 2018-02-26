@@ -83,27 +83,12 @@ export default class FoundPetScreen extends Component {
         const result = await ImagePicker.launchCameraAsync({
             base64: true
         })
-        // console.log('resul', result)
+        // console.log('resul', result.uri)
         body.append("picture", {
             uri: result.uri,
             name,
             type: "image/jpg"
-        });
-        const res = await fetch("http://127.0.0.1:3000/upload/", {
-            method: "POST",
-            body,
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "multipart/form-data"
-            }
-        }).catch(error => {console.log('--error', error)});
-        console.log('--res', res)
-        // const url = await firebaseApp.storage().ref().child('acidents').getDownloadURL();
-        // await firebaseApp.storage().ref().child('images').getDownloadURL()
-        //     .then(url => {
-        //         console.log('--URL', url)
-        //     })
-        // console.log('--URL', url)
+        })
     }
 
     render() {
