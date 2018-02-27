@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, KeyboardAvoidingView, TextInput } from 'react-native';
 import { Container, Content, Header, Form, Input, Item, Button, Label } from 'native-base'
-import { ImagePicker } from 'expo'
+import { ImagePicker, Constants } from 'expo'
 import b64 from 'base64-js'
 import CameraPawer from '../components/CameraPawer'
 import { fbAcidents } from '../firebase'
@@ -14,7 +14,8 @@ export default class FoundPetScreen extends Component {
         this.state = {
             name: '',
             phoneNumber: '',
-            progress: ''
+            progress: '',
+            email: '',
         }
     }
     sendNotification = (name, phoneNumber) => {
@@ -84,7 +85,6 @@ export default class FoundPetScreen extends Component {
             base64: true,
             quality: 0
         })
-        // console.log('resul', result.uri)
         body.append("picture", {
             uri: result.uri,
             name,
@@ -98,8 +98,11 @@ export default class FoundPetScreen extends Component {
                 "Content-Type": "multipart/form-data"
             }
         })
-        console.log('--res', res)
     }
+
+    _submit = () => {
+        alert(`Confirmation email has been sent to ${this.state.email}`);
+    };
 
     render() {
         const { name, phoneNumber } = this.state
@@ -158,5 +161,5 @@ const styles = StyleSheet.create({
     },
     innerContainer: {
         alignItems: 'center',
-    },
+    }
 })
