@@ -1,50 +1,46 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, StatusBar, KeyboardAvoidingView, TextInput } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label } from 'native-base'
-import { ImagePicker, Constants } from 'expo'
-import b64 from 'base64-js'
-import CameraPawer from '../components/CameraPawer'
+import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
+import { Container, Content, Header, Form, Input, Item, Button, Label, Title, Footer, Thumbnail } from 'native-base'
+import { ImagePicker } from 'expo'
 import { fbAcidents } from '../firebase'
-import { firebaseApp, storageRef } from '../firebase'
 import { convertToByteArray, atob } from '../utils'
 
 export default class FoundPetScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            name: null,
-            phoneNumber: null,
-            pictureUri: null
+            ownerName: '',
+            phoneNumber: '',
+            animalName: '',
+            photo: ''
         }
     }
-    sendNotification = async (name, phoneNumber) => {
-        
+    sendNotification = (name, phoneNumber, animalName) => {
         try {
             fbAcidents.push().set({
                 name,
-                phoneNumber
+                phoneNumber,
+                animalName
             })
         } catch (error) {
             console.log(error.toString())
         }
-        console.log('--state', this.state.pictureUri)
-        
-
     }
 
+
     takePicture = async () => {
-        const namePic = `picture.jpg`
-        const body = new FormData()
+        const name = `picture.jpg`;
+        const body = new FormData();
         const result = await ImagePicker.launchCameraAsync({
-            base64: true,
             quality: 0
         })
-        // this.setState({
-        //     pictureUri: result.uri
-        // })
+        console.log(result.uri)
+        this.setState({
+            photo: result.uri
+        })
         body.append("picture", {
             uri: result.uri,
-            namePic,
+            name,
             type: "image/jpg"
         })
         const res = await fetch('https://us-central1-anish-6cd8e.cloudfunctions.net/uploadFileTest', {
@@ -58,45 +54,84 @@ export default class FoundPetScreen extends Component {
     }
 
     render() {
-        const { name, phoneNumber } = this.state
+        const { ownerName, phoneNumber, animalName } = this.state
         const { takePicture } = this
+
         return (
             <Container style={styles.container}>
-                <View style={{ height: '60%' }}>
-                    <Button
-                        success
-                        onPress={() => { takePicture() }}>
-                        <Text style={{ color: 'white' }}>Take a picture</Text>
-                    </Button>
-                </View>
-                <Form>
-                    <Item floatingLabel>
-                        <Label>Name</Label>
-                        <Input
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            onChangeText={name => this.setState({ name })}
-                        />
-                    </Item>
-                    <Item floatingLabel>
-                        <Label>Phone number</Label>
-                        <Input
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            onChangeText={phoneNumber => this.setState({ phoneNumber })}
-                        />
-                    </Item>
-                    <Button
-                        style={{ marginTop: 10 }}
-                        full
-                        rounded
-                        success
-                        onPress={() => { this.sendNotification(name, phoneNumber) }}
-                    >
-                        <Text style={{ color: 'white' }}>Send notification</Text>
-                    </Button>
+                <Content>
+                    <Form>
+                        <Item style={{ justifyContent: 'center', alignItems: 'center', height: '70%', marginLeft: -15 }}>
+                            {!this.state.photo ?
+                                <Image
+                                    style={{
+                                        backgroundColor: '#ccc',
+                                        flex: 1,
+                                        resizeMode: 'contain',
+                                        position: 'absolute',
+                                        width: '100%',
+                                        height: '100%',
+                                        justifyContent: 'center',
+                                    }}
 
-                </Form>
+                                    source={require('../assets/images/cool-background.jpg')}
+                                /> :
+                                <Image
+                                    style={{
+                                        backgroundColor: '#ccc',
+                                        flex: 1,
+                                        resizeMode: 'contain',
+                                        position: 'absolute',
+                                        width: '100%',
+                                        height: '100%',
+                                        justifyContent: 'center',
+                                    }}
+
+                                    source={{uri: this.state.photo}}
+                                />
+                            }
+
+                            <Button
+                                onPress={() => { takePicture() }}
+                                style={{ alignSelf: 'center' }}>
+                                <Thumbnail square size={220} source={require('../assets/images/clipart.jpg')} />
+                            </Button>
+                        </Item>
+                        <Item floatingLabel style={{ height: '10%' }}>
+                            <Label>Owner name</Label>
+                            <Input
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                onChangeText={ownerName => this.setState({ ownerName })}
+                            />
+                        </Item>
+                        <Item floatingLabel style={{ height: '10%' }}>
+                            <Label>Phone number</Label>
+                            <Input
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                onChangeText={phoneNumber => this.setState({ phoneNumber })}
+                            />
+                        </Item>
+                        <Item floatingLabel style={{ height: '10%' }}>
+                            <Label>Animal name</Label>
+                            <Input
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                onChangeText={animalName => this.setState({ animalName })}
+                            />
+                        </Item>
+                        <Button
+                            style={{ marginTop: 30 }}
+                            full
+                            rounded
+                            success
+                            onPress={() => { this.sendNotification(ownerName, phoneNumber, animalName) }}
+                        >
+                            <Text style={{ color: 'white' }}>Send notification</Text>
+                        </Button>
+                    </Form>
+                </Content>
             </Container>
         )
     }
