@@ -12,13 +12,13 @@ export default class FoundPetScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            name: '',
-            phoneNumber: '',
-            progress: '',
-            email: '',
+            name: null,
+            phoneNumber: null,
+            pictureUri: null
         }
     }
-    sendNotification = (name, phoneNumber) => {
+    sendNotification = async (name, phoneNumber) => {
+        
         try {
             fbAcidents.push().set({
                 name,
@@ -27,67 +27,24 @@ export default class FoundPetScreen extends Component {
         } catch (error) {
             console.log(error.toString())
         }
+        console.log('--state', this.state.pictureUri)
+        
+
     }
 
-    uploadAsByteArray = async (pickerResultAsByteArray, progressCallback) => {
-
-        try {
-
-            var metadata = {
-                contentType: 'image/jpeg',
-            };
-
-            var storageRef = firebaseApp.storage().ref();
-            var ref = storageRef.child('acidents/mountains.jpg')
-            let uploadTask = ref.put(pickerResultAsByteArray, metadata)
-
-            uploadTask.on('state_changed', function (snapshot) {
-
-                progressCallback && progressCallback(snapshot.bytesTransferred / snapshot.totalBytes)
-
-                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-
-            }, function (error) {
-                console.log("in _uploadAsByteArray ", error)
-            }, function () {
-                var downloadURL = uploadTask.snapshot.downloadURL;
-                console.log("_uploadAsByteArray ", uploadTask.snapshot.downloadURL)
-            });
-
-
-        } catch (ee) {
-            console.log("when trying to load uploadAsByteArray ", ee)
-        }
-    }
     takePicture = async () => {
-
-        const result = await ImagePicker.launchCameraAsync({
-            base64: true
-        })
-        // console.log('resul', result)
-        console.log('func', this.uploadAsByteArray)
-        // storageRef.ref('acidents').child('new_pic.jpg').putString(result.base64, 'base64', { contentType: 'image/jpg' })
-        //     .then(function (snapshot) {
-        //         console.log('Uploaded a base64 string!');
-        //     });
-
-        this.uploadAsByteArray(convertToByteArray(result.base64), (progress) => {
-            console.log(progress)
-            this.setState({ progress })
-        })
-    }
-
-    upload = async () => {
-        const name = `picture.jpg`;
-        const body = new FormData();
+        const namePic = `picture.jpg`
+        const body = new FormData()
         const result = await ImagePicker.launchCameraAsync({
             base64: true,
             quality: 0
         })
+        // this.setState({
+        //     pictureUri: result.uri
+        // })
         body.append("picture", {
             uri: result.uri,
-            name,
+            namePic,
             type: "image/jpg"
         })
         const res = await fetch('https://us-central1-anish-6cd8e.cloudfunctions.net/uploadFileTest', {
@@ -100,19 +57,15 @@ export default class FoundPetScreen extends Component {
         })
     }
 
-    _submit = () => {
-        alert(`Confirmation email has been sent to ${this.state.email}`);
-    };
-
     render() {
         const { name, phoneNumber } = this.state
-        const { takePicture, upload } = this
+        const { takePicture } = this
         return (
             <Container style={styles.container}>
                 <View style={{ height: '60%' }}>
                     <Button
                         success
-                        onPress={() => { upload() }}>
+                        onPress={() => { takePicture() }}>
                         <Text style={{ color: 'white' }}>Take a picture</Text>
                     </Button>
                 </View>
