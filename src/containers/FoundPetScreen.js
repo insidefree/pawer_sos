@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 import { Container, Content, Header, Form, Input, Item, Button, Label, Title, Footer, Thumbnail } from 'native-base'
 import { ImagePicker } from 'expo'
 import { fbAcidents } from '../firebase'
@@ -11,35 +11,39 @@ export default class FoundPetScreen extends Component {
         this.state = {
             ownerName: '',
             phoneNumber: '',
-            animalName: '',
-            photo: ''
+            photo: '',
+            spinner: false
         }
     }
-    sendNotification = (name, phoneNumber, animalName) => {
+
+    sendNotification = (name, phoneNumber) => {
         try {
             fbAcidents.push().set({
                 name,
                 phoneNumber,
-                animalName
             })
         } catch (error) {
             console.log(error.toString())
         }
+        this.sendPhoto()
     }
 
 
     takePicture = async () => {
-        const name = `picture.jpg`;
-        const body = new FormData();
         const result = await ImagePicker.launchCameraAsync({
             quality: 0
         })
         console.log(result.uri)
         this.setState({
-            photo: result.uri
+            photo: result.uri,
         })
-        body.append("picture", {
-            uri: result.uri,
+    }
+
+    sendPhoto = async () => {
+        const name = `${this.state.ownerName}_${Date.now()}.jpg`
+        const body = new FormData();
+        body.append(name, {
+            uri: this.state.photo,
             name,
             type: "image/jpg"
         })
@@ -60,44 +64,34 @@ export default class FoundPetScreen extends Component {
         return (
             <Container style={styles.container}>
                 <Content>
+                    <View></View>
                     <Form>
-                        <Item style={{ justifyContent: 'center', alignItems: 'center', height: '70%', marginLeft: -15 }}>
-                            {!this.state.photo ?
-                                <Image
-                                    style={{
-                                        backgroundColor: '#ccc',
-                                        flex: 1,
-                                        resizeMode: 'contain',
-                                        position: 'absolute',
-                                        width: '100%',
-                                        height: '100%',
-                                        justifyContent: 'center',
-                                    }}
+                        <Item style={{ justifyContent: 'center', alignItems: 'center', height: '85%', marginLeft: -15 }}>
+                            <ImageBackground
+                                source={require('../assets/images/cool-background.jpg')}
+                                style={{ width: '100%', height: '100%', justifyContent: 'center' }}
+                            >
+                                {this.state.photo ?
+                                    <Image
+                                        style={{
+                                            flex: 1,
+                                            resizeMode: 'contain',
+                                            position: 'absolute',
+                                            width: '100%',
+                                            height: '100%',
+                                            justifyContent: 'center',
+                                        }}
 
-                                    source={require('../assets/images/cool-background.jpg')}
-                                /> :
-                                <Image
-                                    style={{
-                                        backgroundColor: '#ccc',
-                                        flex: 1,
-                                        resizeMode: 'contain',
-                                        position: 'absolute',
-                                        width: '100%',
-                                        height: '100%',
-                                        justifyContent: 'center',
-                                    }}
-
-                                    source={{uri: this.state.photo}}
-                                />
-                            }
-
-                            <Button
-                                onPress={() => { takePicture() }}
-                                style={{ alignSelf: 'center' }}>
-                                <Thumbnail square size={220} source={require('../assets/images/clipart.jpg')} />
-                            </Button>
+                                        source={{ uri: this.state.photo }}
+                                    /> : <Text></Text>}
+                                <Button
+                                    onPress={() => { takePicture() }}
+                                    style={{ alignSelf: 'center' }}>
+                                    <Thumbnail square size={220} source={require('../assets/images/clipart.jpg')} />
+                                </Button>
+                            </ImageBackground>
                         </Item>
-                        <Item floatingLabel style={{ height: '10%' }}>
+                        <Item floatingLabel style={{ height: '15%' }}>
                             <Label>Owner name</Label>
                             <Input
                                 autoCorrect={false}
@@ -105,7 +99,7 @@ export default class FoundPetScreen extends Component {
                                 onChangeText={ownerName => this.setState({ ownerName })}
                             />
                         </Item>
-                        <Item floatingLabel style={{ height: '10%' }}>
+                        <Item floatingLabel style={{ height: '15%' }}>
                             <Label>Phone number</Label>
                             <Input
                                 autoCorrect={false}
@@ -113,20 +107,13 @@ export default class FoundPetScreen extends Component {
                                 onChangeText={phoneNumber => this.setState({ phoneNumber })}
                             />
                         </Item>
-                        <Item floatingLabel style={{ height: '10%' }}>
-                            <Label>Animal name</Label>
-                            <Input
-                                autoCorrect={false}
-                                autoCapitalize='none'
-                                onChangeText={animalName => this.setState({ animalName })}
-                            />
-                        </Item>
+
                         <Button
                             style={{ marginTop: 30 }}
                             full
                             rounded
                             success
-                            onPress={() => { this.sendNotification(ownerName, phoneNumber, animalName) }}
+                            onPress={() => { this.sendNotification(ownerName, phoneNumber) }}
                         >
                             <Text style={{ color: 'white' }}>Send notification</Text>
                         </Button>
