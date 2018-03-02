@@ -20,7 +20,7 @@ export const EventsStackNavigator = StackNavigator({
 export const AppNavigator =  TabNavigator({
     Events: { screen: EventsStackNavigator },
     Status: { screen: LostPetScreen },
-    Profile: { screen: ProfileScreen }
+    Profile: { screen: LoginScreen }
 })
 
 class AppWithNavigationState extends React.Component {
