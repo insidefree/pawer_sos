@@ -113,7 +113,7 @@ exports.uploadFileTest = functions.https.onRequest((req, res) => {
             // only be used for files small enough to fit in memory.
             const filepath = path.join(tmpdir, filename)
             uploads[fieldname] = filepath;
-            // file.pipe(fs.createWriteStream(filepath));
+            file.pipe(fs.createWriteStream(filepath));
         });
 
         // This callback will be invoked after all uploaded files are saved.
