@@ -4,24 +4,24 @@ import { Container, Content, Header, Form, Input, Item, Button, Label, Title, Fo
 import { ImagePicker } from 'expo'
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux'
-import { fbAcidents } from '../firebase'
+import { acidentsRef } from '../firebase'
 import { convertToByteArray, atob } from '../utils'
 
 export class FoundPetScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            ownerName: '',
+            founderName: '',
             phoneNumber: '',
             photo: '',
             spinner: false
         }
     }
 
-    sendNotification = (name, phoneNumber) => {
+    sendNotification = (founderName, phoneNumber) => {
         try {
-            fbAcidents.push().set({
-                name,
+            acidentsRef.push().set({
+                founderName,
                 phoneNumber,
             })
         } catch (error) {
@@ -44,7 +44,7 @@ export class FoundPetScreen extends Component {
     }
 
     sendPhoto = async () => {
-        const name = `${this.state.ownerName}_${Date.now()}.jpg`
+        const name = `${this.state.founderName}_${Date.now()}.jpg`
         const body = new FormData();
         body.append(name, {
             uri: this.state.photo,
@@ -62,7 +62,7 @@ export class FoundPetScreen extends Component {
     }
 
     render() {
-        const { ownerName, phoneNumber, animalName } = this.state
+        const { founderName, phoneNumber } = this.state
         const { takePicture } = this
         return (
             <Container style={styles.container}>
@@ -99,7 +99,7 @@ export class FoundPetScreen extends Component {
                             <Input
                                 autoCorrect={false}
                                 autoCapitalize='none'
-                                onChangeText={ownerName => this.setState({ ownerName })}
+                                onChangeText={founderName => this.setState({ founderName })}
                             />
                         </Item>
                         <Item floatingLabel style={{ height: '15%' }}>
@@ -116,7 +116,7 @@ export class FoundPetScreen extends Component {
                             full
                             rounded
                             success
-                            onPress={() => { this.sendNotification(ownerName, phoneNumber) }}
+                            onPress={() => { this.sendNotification(founderName, phoneNumber) }}
                         >
                             <Text style={{ color: 'white' }}>Send notification</Text>
                         </Button>

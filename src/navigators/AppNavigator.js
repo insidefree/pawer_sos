@@ -9,6 +9,7 @@ import ProfileScreen from '../containers/ProfileScreen'
 import FoundPetScreen from '../containers/FoundPetScreen'
 import LostPetScreen from '../containers/LostPetScreen'
 import StatusListScreen from '../containers/StatusListScreen'
+import ActionScreen from '../containers/ActionScreen'
 import { addListener } from '../utils/redux'
 
 export const EventsStackNavigator = StackNavigator({
@@ -18,9 +19,14 @@ export const EventsStackNavigator = StackNavigator({
     LostPet: { screen: LostPetScreen }
 })
 
+export const StatusStacjNavigator = StackNavigator({
+    StatusList: { screen: StatusListScreen },
+    Action: {screen: ActionScreen}
+})
+
 export const AppNavigator = TabNavigator({
     Events: { screen: EventsStackNavigator },
-    StatusList: { screen: StatusListScreen },
+    StatusList: { screen: StatusStacjNavigator },
     Profile: { screen: LoginScreen }
 })
 

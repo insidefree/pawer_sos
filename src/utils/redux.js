@@ -6,7 +6,7 @@ import {
 const middleware = createReactNavigationReduxMiddleware(
     "root",
     state => state.nav,
-);
+)
 const addListener = createReduxBoundAddListener("root")
 
 export {

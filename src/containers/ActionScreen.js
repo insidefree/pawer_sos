@@ -10,34 +10,21 @@ import { convertToByteArray, atob } from '../utils'
 
 
 // actions
-import { fetchAcidentsFirstLoad } from '../actions/acidents'
 
 // components
-import AcidentCard from '../components/AcidentCard'
 
 
-export class StatusListScreen extends Component {
+export class ActionScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
         }
     }
 
-    componentDidMount() {
-        this.props.fetchAcidentsFirstLoad()
-    }
 
     render() {
-        const { ownerName, phoneNumber, animalName } = this.state
-        const { acidentsList } = this.props
-        console.log('--acidents', this.props)
         return (
             <View style={styles.container}>
-                {acidentsList.map(acident => {
-                    return (
-                        <AcidentCard acident={acident} />
-                    )
-                })}
             </View>
         )
     }
@@ -51,11 +38,11 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    acidentsList: state.acidents.acidentsList
+    
 })
 
 const mapDispatchToProps = dispatch => ({
-    fetchAcidentsFirstLoad: bindActionCreators(fetchAcidentsFirstLoad, dispatch)
+    
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(StatusListScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(ActionScreen)

@@ -12,7 +12,6 @@ const firebaseConfig = {
 }
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig)
-export const fbAcidents = firebaseApp.database().ref('acidents')
+export const acidentsRef = firebaseApp.database().ref('acidents')
 export const storageRef = firebaseApp.storage()
-
 

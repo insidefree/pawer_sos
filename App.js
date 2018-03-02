@@ -3,17 +3,19 @@ import { StyleSheet, Text, View } from 'react-native'
 import { AppRegistry } from 'react-native'
 import { Provider } from 'react-redux'
 import { Permissions, Notifications } from 'expo'
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import * as firebase from 'firebase'
 import { firebaseApp } from './src/firebase'
 
 import AppReducer from './src/reducers'
 import AppWithNavigationState from './src/navigators/AppNavigator'
 import { middleware } from './src/utils/redux'
+import reduxThunk from 'redux-thunk'
 
+// const store = compose(applyMiddleware(middleware))(createStore)(AppReducer)
 const store = createStore(
   AppReducer,
-  applyMiddleware(middleware),
+  applyMiddleware(middleware, reduxThunk)
 )
 
 export default class App extends React.Component {
@@ -54,15 +56,15 @@ export default class App extends React.Component {
     // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
 
-     // POST the token to our backend so we can use it to send pushes from there
-     var updates = {}
-     updates['/expoToken'] = token
-     console.log(`--user: ${JSON.stringify(user)}`)
-     firebaseApp.database().ref('usersac').child(user.uid).update(updates)
+    // POST the token to our backend so we can use it to send pushes from there
+    var updates = {}
+    updates['/expoToken'] = token
+    console.log(`--user: ${JSON.stringify(user)}`)
+    firebaseApp.database().ref('usersac').child(user.uid).update(updates)
     //  firebase.database().ref('userac' + user.uid).set({
     //   expoToken : token
     // });
-     //call the push notification 
+    //call the push notification 
   }
 
   render() {

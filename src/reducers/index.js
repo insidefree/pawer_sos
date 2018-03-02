@@ -55,9 +55,12 @@ function auth(state = initialAuthState, action) {
     }
 }
 
+import acidents from './acidents'
+
 const AppReducer = combineReducers({
     nav,
     auth,
+    acidents,
 })
 
 export default AppReducer
