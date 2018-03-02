@@ -30,7 +30,7 @@
     "no-template-curly-in-string": 1,
 
     // Warn if return statements do not either always or never specify values
-    "consistent-return": 1,
+    "consistent-return": 0,
 
     // Warn if no return statements in callbacks of array methods
     "array-callback-return": 1,
@@ -78,7 +78,7 @@
     "no-throw-literal": 2,
 
     // Require using Error objects as Promise rejection reasons
-    "prefer-promise-reject-errors": 2,
+    "prefer-promise-reject-errors": 1,
 
     // Enforce “for” loop update clause moving the counter in the right direction
     "for-direction": 2,
@@ -99,7 +99,7 @@
     "no-shadow-restricted-names": 2,
 
     // Enforce return statements in callbacks of array methods
-    "callback-return": 2,
+    "callback-return": 1,
 
     // Require error handling in callbacks
     "handle-callback-err": 2,

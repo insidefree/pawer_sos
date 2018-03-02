@@ -1,5 +1,4 @@
 import * as firebase from 'firebase'
-// const admin = require('firebase-admin')
 // const serviceAccount = require('./serviceAccountKey.json')
 
 
@@ -13,9 +12,7 @@ const firebaseConfig = {
 }
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig)
+export const fbAcidents = firebaseApp.database().ref('acidents')
+export const storageRef = firebaseApp.storage()
 
-// export const firebaseAdmin = admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: 'https://anish-6cd8e.firebaseio.com'
-// })
 
