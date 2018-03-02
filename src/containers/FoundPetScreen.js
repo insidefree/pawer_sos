@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 import { Container, Content, Header, Form, Input, Item, Button, Label, Title, Footer, Thumbnail } from 'native-base'
 import { ImagePicker } from 'expo'
+import { NavigationActions } from 'react-navigation'
+import { connect } from 'react-redux'
 import { fbAcidents } from '../firebase'
 import { convertToByteArray, atob } from '../utils'
 
-export default class FoundPetScreen extends Component {
+export class FoundPetScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -26,6 +28,8 @@ export default class FoundPetScreen extends Component {
             console.log(error.toString())
         }
         this.sendPhoto()
+        this.props.resetMainScreenAction()
+        this.props.statusListScreenAction()        
     }
 
 
@@ -60,7 +64,6 @@ export default class FoundPetScreen extends Component {
     render() {
         const { ownerName, phoneNumber, animalName } = this.state
         const { takePicture } = this
-
         return (
             <Container style={styles.container}>
                 <Content>
@@ -138,3 +141,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 })
+
+const mapStateToProps = state => ({
+})
+
+const mapDispatchToProps = dispatch => ({
+    statusListScreenAction: () => dispatch(NavigationActions.navigate({
+        routeName: 'StatusList'
+    })),
+    resetMainScreenAction: () => dispatch(NavigationActions.reset({
+        index: 0,
+        actions: [
+            NavigationActions.navigate({ routeName: 'Main' }),
+        ],
+    }))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(FoundPetScreen)
