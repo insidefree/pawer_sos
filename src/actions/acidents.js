@@ -10,8 +10,8 @@ export const fetchAcidentsFirstLoad = () => {
             .on('value', snapshot => {
                 let acidentsList = []
                 snapshot.forEach(childSnapshot => {
-                    const { founderName, phoneNumber } = childSnapshot.val()
-                    acidentsList.push({ founderName, phoneNumber })
+                    const { founderName, phoneNumber, dwLink } = childSnapshot.val()
+                    acidentsList.push({ founderName, phoneNumber, dwLink })
                     lastKnownAcident = childSnapshot.val()
                 });
                 dispatch({ type: constants.END_LOADING_ACIDENTS })

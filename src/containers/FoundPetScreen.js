@@ -14,6 +14,7 @@ export class FoundPetScreen extends Component {
             founderName: '',
             phoneNumber: '',
             photo: '',
+            dwLink: '',
             spinner: false
         }
     }
@@ -23,13 +24,14 @@ export class FoundPetScreen extends Component {
             acidentsRef.push().set({
                 founderName,
                 phoneNumber,
+                dwLink: this.state.dwLink
             })
         } catch (error) {
             console.log(error.toString())
         }
         this.sendPhoto()
         this.props.resetMainScreenAction()
-        this.props.statusListScreenAction()        
+        this.props.statusListScreenAction()
     }
 
 
@@ -43,22 +45,39 @@ export class FoundPetScreen extends Component {
         })
     }
 
-    sendPhoto = async () => {
+    sendPhoto = async (founderName, phoneNumber) => {
         const name = `${this.state.founderName}_${Date.now()}.jpg`
         const body = new FormData();
+        const dwLink = `http://storage.googleapis.com/anish-6cd8e.appspot.com/acidentPhotos/${encodeURIComponent(name)}`
         body.append(name, {
             uri: this.state.photo,
             name,
             type: "image/jpg"
         })
+        // body.append('fields', JSON.stringify({
+        //     founderName: this.state.founderName,
+        //     phoneNumber: this.state.phoneNumber
+        // }))
         const res = await fetch('https://us-central1-anish-6cd8e.cloudfunctions.net/uploadFileTest', {
             method: "POST",
             body,
             headers: {
-                Accept: "application/json",
-                "Content-Type": "multipart/form-data"
+                Accept: "application/json"
+                // "Content-Type": "multipart/form-data"
             }
         })
+
+        try {
+            acidentsRef.push().set({
+                founderName,
+                phoneNumber,
+                dwLink
+            })
+        } catch (error) {
+            console.log(error.toString())
+        }
+        this.props.resetMainScreenAction()
+        this.props.statusListScreenAction()
     }
 
     render() {
@@ -116,7 +135,7 @@ export class FoundPetScreen extends Component {
                             full
                             rounded
                             success
-                            onPress={() => { this.sendNotification(founderName, phoneNumber) }}
+                            onPress={() => { this.sendPhoto(founderName, phoneNumber) }}
                         >
                             <Text style={{ color: 'white' }}>Send notification</Text>
                         </Button>

@@ -28,7 +28,7 @@ export class StatusListScreen extends Component {
     }
 
     render() {
-        const { ownerName, phoneNumber, animalName } = this.state
+        // const { ownerName, phoneNumber, animalName } = this.state
         const { acidentsList } = this.props
         console.log('--acidents', this.props)
         return (

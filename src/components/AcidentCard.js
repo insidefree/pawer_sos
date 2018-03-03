@@ -4,13 +4,14 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Ic
 
 export default class AcidentCard extends Component {
     render() {
-        const { acident: { founderName, phoneNumber } } = this.props
+        const { acident: { founderName, phoneNumber, dwLink } } = this.props
+        console.log('--dwlink', dwLink)
         return (
             <Container style={styles.container}>
                     <Card>
                         <CardItem>
                             <Left>
-                                <Thumbnail source={{ uri: 'https://www.carscoops.com/wp-content/uploads/2016/01/merc-e-class-gt-rendering-3.jpg' }} />
+                                <Thumbnail source={{ uri: dwLink }} />
                                 <Body>
                                     <Text>{founderName}</Text>
                                     <Text note>{phoneNumber}</Text>

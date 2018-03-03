@@ -2,6 +2,7 @@ const functions = require('firebase-functions')
 const fetch = require('node-fetch')
 const admin = require('firebase-admin')
 // const { fileUpload, uploadImageToStorage } = require("./utils")
+const inspect = require('util').inspect
 
 admin.initializeApp(functions.config().firebase)
 
@@ -106,7 +107,7 @@ exports.uploadFileTest = functions.https.onRequest((req, res) => {
         // This object will accumulate all the uploaded files, keyed by their name.
         const uploads = {}
         const tmpdir = os.tmpdir();
-
+        let fields = {}
         // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
             // Note that os.tmpdir() is an in-memory file system, so should
@@ -115,17 +116,20 @@ exports.uploadFileTest = functions.https.onRequest((req, res) => {
             uploads[fieldname] = filepath;
             file.pipe(fs.createWriteStream(filepath));
         });
+        // busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
+        //     console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+        //     fields = JSON.parse(val)
+        //   });
 
         // This callback will be invoked after all uploaded files are saved.
         busboy.on('finish', () => {
             const bucket = gcs.bucket('anish-6cd8e.appspot.com');
-
             // *** Process uploaded files here ***
             for (const name in uploads) {
                 const file = uploads[name];
                 console.log('--file', file)
-                // fs.unlinkSync(file);
-
+                const uploadTo = `acidentPhotos/${file.split('/').pop()}`
+                // const dwLink = `http://storage.googleapis.com/${bucket.name}/${encodeURIComponent(uploadTo)}`
                 bucket
                     .upload(file, {
                         uploadType: "media",
@@ -134,7 +138,8 @@ exports.uploadFileTest = functions.https.onRequest((req, res) => {
                         //         contentType: mimetype
                         //     }
                         // }
-                        destination: `acidentPhotos/${file.split('/').pop()}`
+                        public: true,
+                        destination: uploadTo
                     })
                     .then(() => {
                         res.status(200).json({
