@@ -19,15 +19,20 @@ export const EventsStackNavigator = StackNavigator({
     LostPet: { screen: LostPetScreen }
 })
 
-export const StatusStacjNavigator = StackNavigator({
+export const StatusStackNavigator = StackNavigator({
     StatusList: { screen: StatusListScreen },
-    Action: {screen: ActionScreen}
+    Action: { screen: ActionScreen }
+})
+
+export const ProfileStackNavigator = StackNavigator({
+    Login: { screen: LoginScreen },
+    ProfileScreen: { screen: ProfileScreen }
 })
 
 export const AppNavigator = TabNavigator({
     Events: { screen: EventsStackNavigator },
-    StatusList: { screen: StatusStacjNavigator },
-    Profile: { screen: LoginScreen }
+    StatusList: { screen: StatusStackNavigator },
+    Profile: { screen: ProfileStackNavigator }
 })
 
 class AppWithNavigationState extends React.Component {

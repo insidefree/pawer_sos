@@ -5,6 +5,9 @@ import { Container, Content, Header, Form, Input, Item, Button, Label } from 'na
 import * as firebase from 'firebase'
 import { firebaseApp, usersAcRef } from '../firebase'
 import { Permissions, Notifications } from 'expo'
+import { NavigationActions } from 'react-navigation'
+import { connect } from 'react-redux'
+
 
 class LoginScreen extends Component {
 
@@ -19,7 +22,9 @@ class LoginScreen extends Component {
     componentDidMount() {
         firebaseApp.auth().onAuthStateChanged(user => {
             if (user != null) {
-                console.log(user)
+                console.log('didMount', user)
+            } else {
+                this.props.resetLoginScreenAction()
             }
         })
     }
@@ -38,6 +43,9 @@ class LoginScreen extends Component {
                 .then(user => {
                     this.registerForPushNotificationsAsync(user)
                 })
+                .then(() => {
+                    this.props.profileScreen()
+                })
         } catch (error) {
             console.log(error.toString())
         }
@@ -48,6 +56,9 @@ class LoginScreen extends Component {
             firebaseApp.auth().signInWithEmailAndPassword(email, password)
                 .then(user => {
                     this.registerForPushNotificationsAsync(user)
+                })
+                .then(() => {
+                    this.props.profileScreen()
                 })
         } catch (error) {
             console.log(error.toString())
@@ -170,4 +181,19 @@ const styles = StyleSheet.create({
     },
 })
 
-export default LoginScreen
+const mapStateToProps = state => ({
+})
+
+const mapDispatchToProps = dispatch => ({
+    profileScreen: () => dispatch(NavigationActions.navigate({
+        routeName: 'ProfileScreen'
+    })),
+    resetLoginScreenAction: () => dispatch(NavigationActions.reset({
+        index: 0,
+        actions: [
+            NavigationActions.navigate({ routeName: 'Login' }),
+        ],
+    }))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
