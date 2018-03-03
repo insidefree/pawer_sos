@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { StyleSheet, Text, View } from 'react-native'
 import { Container, Content, Header, Form, Input, Item, Button, Label } from 'native-base'
 import * as firebase from 'firebase'
-import { firebaseApp } from '../firebase'
+import { firebaseApp, usersAcRef } from '../firebase'
+import { Permissions, Notifications } from 'expo'
 
 class LoginScreen extends Component {
 
@@ -14,7 +15,7 @@ class LoginScreen extends Component {
             password: ''
         }
     }
-    
+
     componentDidMount() {
         firebaseApp.auth().onAuthStateChanged(user => {
             if (user != null) {
@@ -30,6 +31,13 @@ class LoginScreen extends Component {
                 return
             }
             firebaseApp.auth().createUserWithEmailAndPassword(email, password)
+                .then(user => {
+                    usersAcRef.child(user.uid).set({ uid: user.uid, email })
+                    return user
+                })
+                .then(user => {
+                    this.registerForPushNotificationsAsync(user)
+                })
         } catch (error) {
             console.log(error.toString())
         }
@@ -39,13 +47,46 @@ class LoginScreen extends Component {
         try {
             firebaseApp.auth().signInWithEmailAndPassword(email, password)
                 .then(user => {
-                    console.log(user)
+                    this.registerForPushNotificationsAsync(user)
                 })
         } catch (error) {
             console.log(error.toString())
         }
     }
 
+    registerForPushNotificationsAsync = async (user) => {
+        const { status: existingStatus } = await Permissions.getAsync(
+            Permissions.NOTIFICATIONS
+        );
+        let finalStatus = existingStatus;
+
+        // only ask if permissions have not already been determined, because
+        // iOS won't necessarily prompt the user a second time.
+        if (existingStatus !== 'granted') {
+            // Android remote notification permissions are granted during the app
+            // install, so this will only ask on iOS
+            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            finalStatus = status;
+        }
+
+        // Stop here if the user did not grant permissions
+        if (finalStatus !== 'granted') {
+            return;
+        }
+
+        // Get the token that uniquely identifies this device
+        let token = await Notifications.getExpoPushTokenAsync();
+
+        // POST the token to our backend so we can use it to send pushes from there
+        var updates = {}
+        updates['/expoToken'] = token
+        console.log(`--user: ${JSON.stringify(user)}`)
+        firebaseApp.database().ref('usersac').child(user.uid).update(updates)
+        //  firebase.database().ref('userac' + user.uid).set({
+        //   expoToken : token
+        // });
+        //call the push notification 
+    }
     async loginWithFacebook() {
         const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('174623653159521', { permissions: ['public_profile'] })
         if (type == 'success') {

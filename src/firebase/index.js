@@ -13,5 +13,6 @@ const firebaseConfig = {
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig)
 export const acidentsRef = firebaseApp.database().ref('acidents')
+export const usersAcRef = firebaseApp.database().ref('usersac')
 export const storageRef = firebaseApp.storage()
 

@@ -7,7 +7,6 @@ export default class AcidentCard extends Component {
         const { acident: { founderName, phoneNumber } } = this.props
         return (
             <Container style={styles.container}>
-                <Content>
                     <Card>
                         <CardItem>
                             <Left>
@@ -22,7 +21,6 @@ export default class AcidentCard extends Component {
                             <Text>10/02/18</Text>
                         </CardItem>
                     </Card>
-                </Content>
             </Container>
         )
     }
@@ -31,6 +29,7 @@ export default class AcidentCard extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        height: 120
         // justifyContent: 'center',
     }
 })

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, TextInput, Image, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native'
+import { View, StyleSheet, TextInput, Image, TouchableOpacity, ActivityIndicator, ImageBackground, FlatList } from 'react-native'
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right } from 'native-base'
 import { ImagePicker } from 'expo'
 import { NavigationActions } from 'react-navigation'
@@ -33,11 +33,11 @@ export class StatusListScreen extends Component {
         console.log('--acidents', this.props)
         return (
             <View style={styles.container}>
-                {acidentsList.map(acident => {
-                    return (
-                        <AcidentCard acident={acident} />
-                    )
-                })}
+                <FlatList
+                    keyExtractor={(item, index) => item.founderName}
+                    data={acidentsList}
+                    renderItem={({ item }) => <AcidentCard acident={item} />}
+                />
             </View>
         )
     }

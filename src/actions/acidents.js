@@ -5,7 +5,7 @@ export const fetchAcidentsFirstLoad = () => {
     return dispatch => {
         dispatch({ type: constants.START_LOADING_ACIDENTS })
         var lastKnownAcident = null
-        var pageQuery = acidentsRef.limitToFirst(3)
+        var pageQuery = acidentsRef
         pageQuery
             .on('value', snapshot => {
                 let acidentsList = []
