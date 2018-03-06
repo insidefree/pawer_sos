@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ActivityInd
 import { Container, Content, Header, Form, Input, Item, Button, Label, Title, Footer, Thumbnail, Card } from 'native-base'
 import { ImagePicker } from 'expo'
 import { NavigationActions } from 'react-navigation'
+import Modal from 'react-native-modal'
 import { connect } from 'react-redux'
 import { acidentsRef } from '../firebase'
 import { convertToByteArray, atob } from '../utils'
@@ -15,7 +16,8 @@ export class FoundPetScreen extends Component {
             phoneNumber: '',
             photo: '',
             dwLink: '',
-            spinner: false
+            spinner: false,
+            visibleModal: false
         }
     }
 
@@ -36,6 +38,7 @@ export class FoundPetScreen extends Component {
 
 
     takePicture = async () => {
+
         const result = await ImagePicker.launchCameraAsync({
             quality: 0
         })
@@ -46,6 +49,9 @@ export class FoundPetScreen extends Component {
     }
 
     sendPhoto = async (founderName, phoneNumber) => {
+        this.setState({
+            visibleModal: true
+        })
         const name = `${this.state.founderName}_${Date.now()}.jpg`
         const body = new FormData();
         const dwLink = `http://storage.googleapis.com/anish-6cd8e.appspot.com/acidentPhotos/${encodeURIComponent(name)}`
@@ -78,6 +84,9 @@ export class FoundPetScreen extends Component {
         }
         this.props.resetMainScreenAction()
         this.props.statusListScreenAction()
+        this.setState({
+            visibleModal: false
+        })
     }
 
     render() {
@@ -101,11 +110,11 @@ export class FoundPetScreen extends Component {
                             /> : <View></View>}
                         <TouchableOpacity onPress={() => { takePicture() }}>
                             <Image
-                                style={{alignSelf: 'center', width: 100, height: 100}}
+                                style={{ alignSelf: 'center', width: 100, height: 100 }}
                                 source={require('../assets/images/clipart.jpg')}
                             />
                         </TouchableOpacity>
-                        
+
                     </View>
                     <Form style={styles.form}>
                         <Item floatingLabel>
@@ -137,6 +146,20 @@ export class FoundPetScreen extends Component {
                         </Button>
                     </View>
                 </Content>
+                <Modal
+                    style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                    isVisible={this.state.visibleModal}
+                    backdropColor={'grey'}
+                    backdropOpacity={0.7}
+                    animationIn={'zoomInDown'}
+                    animationOut={'zoomOutUp'}
+                    animationInTiming={1000}
+                    animationOutTiming={1000}
+                    backdropTransitionInTiming={1000}
+                    backdropTransitionOutTiming={1000}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                    <Text>Notifications are sending now...</Text>
+                </Modal>
             </Container>
         )
     }
