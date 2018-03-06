@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Title, Footer, Thumbnail } from 'native-base'
+import { Container, Content, Header, Form, Input, Item, Button, Label, Title, Footer, Thumbnail, Card } from 'native-base'
 import { ImagePicker } from 'expo'
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux'
@@ -84,36 +84,31 @@ export class FoundPetScreen extends Component {
         const { founderName, phoneNumber } = this.state
         const { takePicture } = this
         return (
-            <Container style={styles.container}>
-                <Content>
-                    <View></View>
-                    <Form>
-                        <Item style={{ justifyContent: 'center', alignItems: 'center', height: '85%', marginLeft: -15 }}>
-                            <ImageBackground
-                                source={require('../assets/images/cool-background.jpg')}
-                                style={{ width: '100%', height: '100%', justifyContent: 'center' }}
-                            >
-                                {this.state.photo ?
-                                    <Image
-                                        style={{
-                                            flex: 1,
-                                            resizeMode: 'contain',
-                                            position: 'absolute',
-                                            width: '100%',
-                                            height: '100%',
-                                            justifyContent: 'center',
-                                        }}
-
-                                        source={{ uri: this.state.photo }}
-                                    /> : <Text></Text>}
-                                <Button
-                                    onPress={() => { takePicture() }}
-                                    style={{ alignSelf: 'center' }}>
-                                    <Thumbnail square size={220} source={require('../assets/images/clipart.jpg')} />
-                                </Button>
-                            </ImageBackground>
-                        </Item>
-                        <Item floatingLabel style={{ height: '15%' }}>
+            <Container>
+                <Content contentContainerStyle={{ flexGrow: 1 }}>
+                    <View style={styles.imageView}>
+                        {this.state.photo ?
+                            <Image
+                                style={{
+                                    flex: 6,
+                                    resizeMode: 'contain',
+                                    position: 'absolute',
+                                    width: '100%',
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                }}
+                                source={{ uri: this.state.photo }}
+                            /> : <View></View>}
+                        <TouchableOpacity onPress={() => { takePicture() }}>
+                            <Image
+                                style={{alignSelf: 'center', width: 100, height: 100}}
+                                source={require('../assets/images/clipart.jpg')}
+                            />
+                        </TouchableOpacity>
+                        
+                    </View>
+                    <Form style={styles.form}>
+                        <Item floatingLabel>
                             <Label>Owner name</Label>
                             <Input
                                 autoCorrect={false}
@@ -121,7 +116,7 @@ export class FoundPetScreen extends Component {
                                 onChangeText={founderName => this.setState({ founderName })}
                             />
                         </Item>
-                        <Item floatingLabel style={{ height: '15%' }}>
+                        <Item floatingLabel>
                             <Label>Phone number</Label>
                             <Input
                                 autoCorrect={false}
@@ -129,9 +124,10 @@ export class FoundPetScreen extends Component {
                                 onChangeText={phoneNumber => this.setState({ phoneNumber })}
                             />
                         </Item>
-
+                    </Form>
+                    <View style={styles.btnView}>
                         <Button
-                            style={{ marginTop: 30 }}
+                            style={{}}
                             full
                             rounded
                             success
@@ -139,7 +135,7 @@ export class FoundPetScreen extends Component {
                         >
                             <Text style={{ color: 'white' }}>Send notification</Text>
                         </Button>
-                    </Form>
+                    </View>
                 </Content>
             </Container>
         )
@@ -148,17 +144,29 @@ export class FoundPetScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
     },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'grey',
+    imageView: {
+        flex: 6, justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#D8D5DB',
+        backgroundColor: 'skyblue'
     },
-    innerContainer: {
-        alignItems: 'center',
+    form: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    btnView: {
+        flex: 1,
+        justifyContent: 'center'
     }
+    // modalContainer: {
+    //     flex: 1,
+    //     justifyContent: 'center',
+    //     backgroundColor: 'grey',
+    // },
+    // innerContainer: {
+    //     alignItems: 'center',
+    // }
 })
 
 const mapStateToProps = state => ({
