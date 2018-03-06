@@ -42,20 +42,21 @@ function nav(state = initialNavState, action) {
     return nextState || state
 }
 
-const initialAuthState = { isLoggedIn: false };
+// const initialAuthState = { isLoggedIn: false };
 
-function auth(state = initialAuthState, action) {
-    switch (action.type) {
-        case 'Login':
-            return { ...state, isLoggedIn: true };
-        case 'Logout':
-            return { ...state, isLoggedIn: false };
-        default:
-            return state;
-    }
-}
+// function auth(state = initialAuthState, action) {
+//     switch (action.type) {
+//         case 'Login':
+//             return { ...state, isLoggedIn: true };
+//         case 'Logout':
+//             return { ...state, isLoggedIn: false };
+//         default:
+//             return state;
+//     }
+// }
 
 import acidents from './acidents'
+import auth from './auth'
 
 const AppReducer = combineReducers({
     nav,

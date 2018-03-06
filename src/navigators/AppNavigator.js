@@ -5,7 +5,6 @@ import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-naviga
 
 import MainScreen from '../containers/MainScreen'
 import LoginScreen from '../containers/LoginScreen'
-import ProfileScreen from '../containers/ProfileScreen'
 import FoundPetScreen from '../containers/FoundPetScreen'
 import LostPetScreen from '../containers/LostPetScreen'
 import StatusListScreen from '../containers/StatusListScreen'
@@ -26,7 +25,6 @@ export const StatusStackNavigator = StackNavigator({
 
 export const ProfileStackNavigator = StackNavigator({
     Login: { screen: LoginScreen },
-    ProfileScreen: { screen: ProfileScreen }
 })
 
 export const AppNavigator = TabNavigator({

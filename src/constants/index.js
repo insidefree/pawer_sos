@@ -28,5 +28,12 @@ export default keyMirror({
     FETCH_ACIDENTS_LIST_BY_BATCH: null,
     FETCH_ACIDENTS_LIST_FIRST_LOAD: null,
     FETCH_ACIDENTS_LIST: null,
-    SELECT_ACIDENT: null
+    SELECT_ACIDENT: null,
+
+    AUTH_SIGN_UP_USER: null,
+    AUTH_LOG_IN_USER: null,
+    AUTH_REGISTER_FOR_PUSH_NOTIFICATIONS_ASYNC: null,
+    AUTH_LOG_IN_WITH_FACEBOOK: null,
+    AUTH_USER_IS_AUTH: null,
+    AUTH_USER_SIGN_OUT: null
 })

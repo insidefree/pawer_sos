@@ -7,34 +7,16 @@ import { firebaseApp, usersAcRef } from '../firebase'
 import { Permissions, Notifications } from 'expo'
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 
-import LoginForm from '../components/LoginForm'
-import Profile from '../components/Profile'
 
-// actions
-import { signUpUser, loginUser, loginWithFacebook, registerForPushNotificationsAsync, signOut } from '../actions/auth'
-
-class LoginScreen extends Component {
+class LoginForm extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
             email: '',
             password: '',
-            isAuth: false
         }
-    }
-
-    componentDidMount() {
-        firebaseApp.auth().onAuthStateChanged(user => {
-            if (user != null) {
-                console.log('didMount', user)
-                this.setState({
-                    isAuth: true
-                })
-            }
-        })
     }
 
     // signUpUser = (email, password) => {
@@ -50,9 +32,6 @@ class LoginScreen extends Component {
     //             })
     //             .then(user => {
     //                 this.registerForPushNotificationsAsync(user)
-    //             })
-    //             .then(() => {
-    //                 this.props.profileScreen()
     //             })
     //     } catch (error) {
     //         console.log(error.toString())
@@ -116,28 +95,59 @@ class LoginScreen extends Component {
     // }
 
     render() {
-        const { isAuth } = this.props
-        const { signUpUser, loginUser, loginWithFacebook, registerForPushNotificationsAsync, signOut } = this.props
+        const {signUpUser, loginUser, loginWithFacebook, registerForPushNotificationsAsync} = this.props
         return (
             <Container style={styles.container}>
-                {!isAuth ?
-                    <LoginForm
-                        signUpUser={signUpUser}
-                        loginUser={loginUser}
-                        loginWithFacebook={loginWithFacebook}
-                        registerForPushNotificationsAsync={registerForPushNotificationsAsync}
-                    /> :
-                    <Profile
-                        signOut={signOut} />
-                }
+                <Form>
+                    <Item floatingLabel>
+                        <Label>Email</Label>
+                        <Input
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            onChangeText={email => this.setState({ email })}
+                        />
+                    </Item>
+                    <Item floatingLabel>
+                        <Label>Password</Label>
+                        <Input
+                            secureTextEntry={true}
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            onChangeText={password => this.setState({ password })}
+                        />
+                    </Item>
+                    <Button
+                        style={{ marginTop: 10 }}
+                        full
+                        rounded
+                        success
+                        onPress={() => loginUser(this.state.email, this.state.password)}
+                    >
+                        <Text style={{ color: 'white' }}>Login</Text>
+                    </Button>
+                    <Button
+                        style={{ marginTop: 10 }}
+                        full
+                        rounded
+                        primary
+                        onPress={() => signUpUser(this.state.email, this.state.password)}
+                    >
+                        <Text style={{ color: 'white' }}>Sign Up</Text>
+                    </Button>
+                    <Button
+                        style={{ marginTop: 10 }}
+                        full
+                        rounded
+                        primary
+                        onPress={() => loginWithFacebook()}
+                    >
+                        <Text style={{ color: 'white' }}>Login with Facebook</Text>
+                    </Button>
+                </Form>
+
             </Container>
         )
     }
-}
-
-
-LoginScreen.navigationOptions = {
-    title: 'Log In',
 }
 
 const styles = StyleSheet.create({
@@ -154,16 +164,4 @@ const styles = StyleSheet.create({
     },
 })
 
-const mapStateToProps = state => ({
-    isAuth: state.auth.isAuth
-})
-
-const mapDispatchToProps = dispatch => ({
-    signUpUser: bindActionCreators(signUpUser, dispatch),
-    loginUser: bindActionCreators(loginUser, dispatch),
-    loginWithFacebook: bindActionCreators(loginWithFacebook, dispatch),
-    registerForPushNotificationsAsync: bindActionCreators(registerForPushNotificationsAsync, dispatch),
-    signOut: bindActionCreators(signOut, dispatch)
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
+export default LoginForm
