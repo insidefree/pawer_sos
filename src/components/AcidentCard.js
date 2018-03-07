@@ -5,7 +5,7 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Ic
 export default class AcidentCard extends Component {
     render() {
         const { acident: { founderName, phoneNumber, dwLink } } = this.props
-        console.log('--dwlink', dwLink)
+        // console.log('--dwlink', dwLink)
         return (
             <Container style={styles.container}>
                     <Card>

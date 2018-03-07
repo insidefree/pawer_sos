@@ -1,7 +1,7 @@
 import * as firebase from 'firebase'
 import { Permissions, Notifications } from 'expo'
 import constants from '../constants'
-import { firebaseApp } from '../firebase'
+import { firebaseApp, usersAcRef } from '../firebase'
 
 export const signUpUser = (email, password) => {
     return dispatch => {
@@ -12,8 +12,9 @@ export const signUpUser = (email, password) => {
                     return user
                 })
                 .then(user => {
-                    // this.registerForPushNotificationsAsync(user)
-                    dispatch({ type: constants.AUTH_REGISTER_FOR_PUSH_NOTIFICATIONS_ASYNC, user })
+                    console.log('--register')
+                    registerForPushNotificationsAsync(user)
+                    // dispatch({ type: constants.AUTH_REGISTER_FOR_PUSH_NOTIFICATIONS_ASYNC, user })
                     dispatch({ type: constants.AUTH_USER_IS_AUTH, isAuth: true })
                 })
             // .then(() => {
@@ -30,8 +31,8 @@ export const loginUser = (email, password) => {
         try {
             firebaseApp.auth().signInWithEmailAndPassword(email, password)
                 .then(user => {
-                    // this.registerForPushNotificationsAsync(user)
-                    dispatch({ type: constants.AUTH_REGISTER_FOR_PUSH_NOTIFICATIONS_ASYNC, user })
+                    registerForPushNotificationsAsync(user)
+                    // dispatch({ type: constants.AUTH_REGISTER_FOR_PUSH_NOTIFICATIONS_ASYNC, user })
                     dispatch({ type: constants.AUTH_USER_IS_AUTH, isAuth: true })
                 })
         } catch (error) {
@@ -40,40 +41,39 @@ export const loginUser = (email, password) => {
     }
 }
 
-export const registerForPushNotificationsAsync = (user) => {
-    return async dispatch => {
-        const { status: existingStatus } = await Permissions.getAsync(
-            Permissions.NOTIFICATIONS
-        );
-        let finalStatus = existingStatus;
+export const registerForPushNotificationsAsync = async (user) => {
+    const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
 
-        // only ask if permissions have not already been determined, because
-        // iOS won't necessarily prompt the user a second time.
-        if (existingStatus !== 'granted') {
-            // Android remote notification permissions are granted during the app
-            // install, so this will only ask on iOS
-            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-            finalStatus = status;
-        }
-
-        // Stop here if the user did not grant permissions
-        if (finalStatus !== 'granted') {
-            return;
-        }
-
-        // Get the token that uniquely identifies this device
-        let token = await Notifications.getExpoPushTokenAsync();
-
-        // POST the token to our backend so we can use it to send pushes from there
-        var updates = {}
-        updates['/expoToken'] = token
-        console.log(`--user: ${JSON.stringify(user)}`)
-        firebaseApp.database().ref('usersac').child(user.uid).update(updates)
-        //  firebase.database().ref('userac' + user.uid).set({
-        //   expoToken : token
-        // });
-        //call the push notification 
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+        // Android remote notification permissions are granted during the app
+        // install, so this will only ask on iOS
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
     }
+
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+        return;
+    }
+
+    // Get the token that uniquely identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+
+    // POST the token to our backend so we can use it to send pushes from there
+    var updates = {}
+    updates['/expoToken'] = token
+    console.log(`--user: ${JSON.stringify(user)}`)
+    firebaseApp.database().ref('usersac').child(user.uid).update(updates)
+    //  firebase.database().ref('userac' + user.uid).set({
+    //   expoToken : token
+    // });
+    //call the push notification 
+    console.log('--finish')
 }
 export const loginWithFacebook = () => {
     return async dispatch => {

@@ -110,8 +110,8 @@ export class FoundPetScreen extends Component {
                             /> : <View></View>}
                         <TouchableOpacity onPress={() => { takePicture() }}>
                             <Image
-                                style={{ alignSelf: 'center', width: 100, height: 100 }}
-                                source={require('../assets/images/clipart.jpg')}
+                                style={{ alignSelf: 'center', width: 105, height: 100 }}
+                                source={require('../assets/images/take_photo.png')}
                             />
                         </TouchableOpacity>
 
